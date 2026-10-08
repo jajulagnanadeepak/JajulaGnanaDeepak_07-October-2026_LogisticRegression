@@ -1,0 +1,173 @@
+TELECOM CUSTOMER CHURN — LOGISTIC REGRESSION
+================================================
+
+OBJECTIVE
+---------
+Build a classification model to estimate customer churn probability
+and classify customers as Likely to Churn or Likely to Stay.
+
+
+ DATASET
+----------
+Dataset: WA_Fn-UseC_-Telco-Customer-Churn.csv
+Rows: 7043
+Columns: 21
+
+Target:
+Churn
+- No = 0 (Stay)
+- Yes = 1 (Churn)
+
+customerID was removed because it is only an identifier.
+TotalCharges was converted from text to numeric.
+
+
+ RELEVANT INPUT FEATURES
+--------------------------
+The model uses customer demographic, service, contract and billing
+attributes, including:
+
+Numerical:
+- SeniorCitizen
+- tenure
+- MonthlyCharges
+- TotalCharges
+
+Categorical:
+- gender
+- Partner
+- Dependents
+- PhoneService
+- MultipleLines
+- InternetService
+- OnlineSecurity
+- OnlineBackup
+- DeviceProtection
+- TechSupport
+- StreamingTV
+- StreamingMovies
+- Contract
+- PaperlessBilling
+- PaymentMethod
+
+
+ PREPROCESSING
+----------------
+- Numerical missing values: median imputation
+- Numerical features: StandardScaler
+- Categorical missing values: most-frequent imputation
+- Categorical features: OneHotEncoder
+- All preprocessing is kept inside a Pipeline.
+
+
+ TRAIN / TEST
+---------------
+80% training data
+20% testing data
+random_state = 42
+stratify = y
+
+Training records: 5634
+Testing records: 1409
+
+
+ MODEL
+--------
+Algorithm: Logistic Regression
+class_weight = "balanced"
+
+The model produces a churn probability.
+
+Probability >= 0.5  -> Likely to Churn
+Probability < 0.5   -> Likely to Stay
+
+
+ EVALUATION RESULTS
+---------------------
+Accuracy  : 0.7381 (73.81%)
+Precision : 0.5043 (50.43%)
+Recall    : 0.7834 (78.34%)
+F1 Score  : 0.6136 (61.36%)
+ROC-AUC   : 0.8413 (84.13%)
+
+
+ CONFUSION MATRIX
+-------------------
+                 Predicted
+                 Stay   Churn
+
+Actual Stay       747    288
+Actual Churn       81    293
+
+True Positive (TP)  = 293
+Actual churners correctly identified.
+
+False Positive (FP) = 288
+Customers who stayed but were incorrectly flagged as churn.
+
+False Negative (FN) = 81
+Customers who churned but were incorrectly predicted to stay.
+
+True Negative (TN) = 747
+Customers who stayed and were correctly identified.
+
+
+ BUSINESS ANALYSIS
+--------------------
+Correctly identified churn customers: 293
+
+Non-churn customers misclassified as churn: 288
+
+For a telecom company, a False Negative can be more costly than a
+False Positive.
+
+False Negative:
+Actual churn -> predicted stay -> company misses the opportunity
+to provide a retention offer and may lose the customer.
+
+False Positive:
+Actual stay -> predicted churn -> company may provide an unnecessary
+retention offer.
+
+Therefore, if customer acquisition/lost-revenue cost is high, the
+company should prioritize higher RECALL for churn detection.
+
+The final threshold should ideally be chosen using the actual business
+cost of retention offers versus losing customers.
+
+
+ RECOMMENDED IMPROVEMENT
+---------------------------
+Tune the classification threshold based on business cost instead of
+always using 0.5.
+
+A lower threshold can catch more potential churners, increasing recall,
+but may also create more false positives and therefore more retention
+offers.
+
+Threshold selection should balance:
+- Customers successfully saved
+- Cost of retention offers
+- Revenue lost from missed churners
+
+
+FINAL CONCLUSION
+----------------
+The Logistic Regression model uses customer attributes to estimate
+churn probability and classify customers as likely to churn or stay.
+
+Model workflow:
+
+Data
+-> Cleaning
+-> Feature Selection
+-> Encoding & Scaling
+-> Train/Test Split
+-> Logistic Regression
+-> Churn Probability
+-> Churn/Stay Prediction
+-> Evaluation
+-> Business Decision
+
+For this problem, recall is especially important because missing a
+real churn customer can directly lead to lost revenue.
